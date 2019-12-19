@@ -419,6 +419,12 @@ bool SamplePowerToy::check_supress(LowlevelKeyboardEvent data)
 			return 1;
         }
 
+		if (ctrlKeyPressed && data.lParam->vkCode == 0x4C)
+        {
+            
+            return 1;
+        }
+
 		
         if (winKeyPressed && data.lParam->vkCode == 0x46)
         {
