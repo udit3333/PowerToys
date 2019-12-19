@@ -5,6 +5,7 @@
 #include <common/settings_objects.h>
 #include "trace.h"
 #include <shobjidl.h> 
+#include <shellapi.h>
 
 
 extern "C" IMAGE_DOS_HEADER __ImageBase;
@@ -46,7 +47,8 @@ DWORD WINAPI ThreadProc(LPVOID lpParam)
                     if (SUCCEEDED(hr))
                     {
                         MessageBox(NULL, pszFilePath, L"File Path", MB_OK);
-                        wcscpy_s(filePath, wcslen(pszFilePath) + 1, pszFilePath);
+                        // filePath(pszFilePath);
+                        wcsncpy_s(filePath, 512, pszFilePath, wcslen(pszFilePath) + 1);
                         CoTaskMemFree(pszFilePath);
                     }
                     pItem->Release();
@@ -114,12 +116,14 @@ public:
     // Constructor
     SamplePowerToy()
     {
+        filePath = new wchar_t[512];
         init_settings();
     };
 
     // Destroy the powertoy and free memory
     virtual void destroy() override
     {
+        delete filePath;
         delete this;
     }
 
@@ -421,7 +425,7 @@ bool SamplePowerToy::check_supress(LowlevelKeyboardEvent data)
 
 		if (ctrlKeyPressed && data.lParam->vkCode == 0x4C)
         {
-            
+            ShellExecute(nullptr, L"open", filePath, NULL, NULL, SW_SHOWNORMAL);
             return 1;
         }
 
