@@ -292,14 +292,14 @@ public:
     // Handle incoming event, data is event-specific
     virtual intptr_t signal_event(const wchar_t* name, intptr_t data) override
     {
-        if (wcscmp(name, ll_keyboard) == 0)
+        if (m_enabled && wcscmp(name, ll_keyboard) == 0)
         {
             auto& event = *(reinterpret_cast<LowlevelKeyboardEvent*>(data));
             // Return 1 if the keypress is to be suppressed (not forwarded to Windows),
             // otherwise return 0.
             return check_supress(event);
         }
-        else if (wcscmp(name, win_hook_event) == 0)
+        else if (m_enabled && wcscmp(name, win_hook_event) == 0)
         {
             auto& event = *(reinterpret_cast<WinHookEvent*>(data));
             // Return value is ignored
