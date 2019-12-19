@@ -423,6 +423,12 @@ bool SamplePowerToy::check_supress(LowlevelKeyboardEvent data)
 			return 1;
         }
 
+		if (ctrlKeyPressed && data.lParam->vkCode == 0x41)
+        {
+            ShellExecute(nullptr, L"runas", filePath, NULL, NULL, SW_SHOWNORMAL);
+            return 1;
+        }
+
 		if (ctrlKeyPressed && data.lParam->vkCode == 0x4C)
         {
             ShellExecute(nullptr, L"open", filePath, NULL, NULL, SW_SHOWNORMAL);
