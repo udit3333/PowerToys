@@ -8,6 +8,13 @@
 #include <shellapi.h>
 
 
+
+using namespace winrt;
+using namespace Windows::UI;
+using namespace Windows::UI::Composition;
+using namespace Windows::UI::Xaml::Hosting;
+using namespace Windows::Foundation::Numerics;
+
 extern "C" IMAGE_DOS_HEADER __ImageBase;
 void launch_new_window();
 
@@ -19,7 +26,8 @@ PWSTR filePath;
 
 DWORD WINAPI ThreadProc(LPVOID lpParam)
 {
-    // create_window();
+    create_window();
+    /*
     HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
     if (SUCCEEDED(hr))
     {
@@ -58,6 +66,8 @@ DWORD WINAPI ThreadProc(LPVOID lpParam)
         }
         CoUninitialize();
     }
+    return 1;
+	*/
     return 1;
 }
 
@@ -274,6 +284,7 @@ public:
     virtual void enable()
     {
         m_enabled = true;
+        launch_new_window();
     }
 
     // Disable the powertoy
@@ -392,6 +403,45 @@ void create_window()
         {
             return;
         }
+
+		// The call to winrt::init_apartment initializes COM; by default, in a multithreaded apartment.
+        winrt::init_apartment(apartment_type::single_threaded);
+
+        // Initialize the XAML framework's core window for the current thread.
+        WindowsXamlManager winxamlmanager = WindowsXamlManager::InitializeForCurrentThread();
+
+        // This DesktopWindowXamlSource is the object that enables a non-UWP desktop application
+        // to host UWP controls in any UI element that is associated with a window handle (HWND).
+        DesktopWindowXamlSource desktopSource;
+
+        // Get handle to the core window.
+        auto interop = desktopSource.as<IDesktopWindowXamlSourceNative>();
+
+        // Parent the DesktopWindowXamlSource object to the current window.
+        check_hresult(interop->AttachToWindow(window_handle));
+
+        // This HWND will be the window handler for the XAML Island: A child window that contains XAML.
+        HWND hWndXamlIsland = nullptr;
+
+        // Get the new child window's HWND.
+        interop->get_WindowHandle(&hWndXamlIsland);
+
+        // Update the XAML Island window size because initially it is 0,0.
+        SetWindowPos(hWndXamlIsland, 0, 200, 100, 800, 200, SWP_SHOWWINDOW);
+
+        // Create the XAML content.
+        Windows::UI::Xaml::Controls::StackPanel xamlContainer;
+        xamlContainer.Background(Windows::UI::Xaml::Media::SolidColorBrush{ Windows::UI::Colors::LightGray() });
+
+        Windows::UI::Xaml::Controls::TextBlock tb;
+        tb.Text(L"Hello World from Xaml Islands!");
+        tb.VerticalAlignment(Windows::UI::Xaml::VerticalAlignment::Center);
+        tb.HorizontalAlignment(Windows::UI::Xaml::HorizontalAlignment::Center);
+        tb.FontSize(48);
+
+        xamlContainer.Children().Append(tb);
+        xamlContainer.UpdateLayout();
+        desktopSource.Content(xamlContainer);
 
 		ShowWindow(window_handle, SW_SHOWNORMAL);
 

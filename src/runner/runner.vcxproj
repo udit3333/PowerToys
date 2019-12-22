@@ -134,6 +134,9 @@
     <ResourceCompile Include="runner.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Manifest Include="PowerToys.exe.manifest" />
+  </ItemGroup>
+  <ItemGroup>
     <CopyFileToFolders Include="svgs\0.svg">
       <DeploymentContent>true</DeploymentContent>
       <FileType>Document</FileType>
