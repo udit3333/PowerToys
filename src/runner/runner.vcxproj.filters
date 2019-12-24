@@ -41,9 +41,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Manifest Include="PowerToys.exe.manifest" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="unhandled_exception_handler.h">
       <Filter>Utils</Filter>
@@ -138,5 +135,8 @@
     <CopyFileToFolders Include="svgs\overlay_portrait.svg">
       <Filter>svgs</Filter>
     </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

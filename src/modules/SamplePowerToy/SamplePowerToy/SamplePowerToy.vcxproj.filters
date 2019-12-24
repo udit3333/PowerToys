@@ -13,7 +13,4 @@
   <ItemGroup>
     <ResourceCompile Include="SamplePowerToy.rc" />
   </ItemGroup>
-  <ItemGroup>
-    <Manifest Include="SamplePowerToy.dll.manifest" />
-  </ItemGroup>
 </Project>
