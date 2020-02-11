@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" 
   xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10" 
-  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" 
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:uap2="http://schemas.microsoft.com/appx/manifest/uap/windows10/2"
+  xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" 
   xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5" 
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" 
   xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10" 
+  xmlns:desktop2="http://schemas.microsoft.com/appx/manifest/desktop/windows10/2"
   xmlns:desktop4="http://schemas.microsoft.com/appx/manifest/desktop/windows10/4" 
   xmlns:desktop5="http://schemas.microsoft.com/appx/manifest/desktop/windows10/5" IgnorableNamespaces="desktop4">
   <Identity Name="Microsoft.PowerToys" Version="0.15.0.0" Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US" ProcessorArchitecture="x64" />
@@ -48,6 +51,21 @@
             </desktop5:ItemType>
           </desktop4:FileExplorerContextMenus>
         </desktop4:Extension>
+        <uap:Extension Category="windows.fileTypeAssociation">
+					<uap3:FileTypeAssociation Name="previewhandler">
+						<uap:SupportedFileTypes>
+							<uap:FileType>.svg</uap:FileType>
+						</uap:SupportedFileTypes>
+						<desktop2:DesktopPreviewHandler Clsid="ddee2b8a-6807-48a6-bb20-2338174ff779"/>
+					</uap3:FileTypeAssociation>
+				</uap:Extension>
+				<com:Extension Category="windows.comServer">
+					<com:ComServer>
+						<com:SurrogateServer DisplayName="Preview Handler" AppId="88235ab2-bfce-4be8-9ed0-0408cd8da792" SystemSurrogate="PreviewHost">
+							<com:Class Id="ddee2b8a-6807-48a6-bb20-2338174ff779" Path="modules\SvgPreviewHandler.dll" ThreadingModel="Both"/>
+						</com:SurrogateServer>
+					</com:ComServer>
+				</com:Extension>
         <Extension Category="windows.backgroundTasks" EntryPoint="PowerToysNotifications.BackgroundHandler">
           <BackgroundTasks>
             <Task Type="general" />
