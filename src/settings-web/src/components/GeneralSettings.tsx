@@ -43,7 +43,7 @@ export class GeneralSettings extends React.Component <any, any> {
     let result : any = {};
     result[this.state.settings_key]= {
       startup: this.startup_reference.get_value().value,
-      run_elevated: this.elevated_reference != null && this.elevated_reference.get_value().value,
+      run_elevated: this.elevated_reference.get_value().value,
       theme: this.theme_reference.get_value().value,
       enabled: enabled
     };
@@ -133,22 +133,20 @@ export class GeneralSettings extends React.Component <any, any> {
             ref={(input) => {this.startup_reference=input;}}
           />
         </Stack>
-        
-        {this.state.settings.general.is_elevated && (<Label>Currently running as administrator</Label>)}
-
-        {this.state.settings.general.is_admin &&
-        (<BoolToggleSettingsControl
+        <BoolToggleSettingsControl
           setting={{display_name: 'Always run as administrator', value: this.state.settings.general.run_elevated}}
           on_change={this.parent_on_change}
           ref={(input) => {this.elevated_reference=input;}}
-        />)
-        }
-        {this.state.settings.general.is_admin && !this.state.settings.general.is_elevated &&
-        (<CustomActionSettingsControl
+        />
+        <CustomActionSettingsControl
           setting={{
             display_name: '',
-            value: 'Running as user. Do you wish to run as administrator instead?',
-            button_text: 'Restart as administrator'
+            value: this.state.settings.general.is_elevated ? 
+                   'Running as administrator. Do you wish to run as user instead?' :
+                   'Running as user. Do you wish to run as administrator instead?',
+            button_text: this.state.settings.general.is_elevated ? 
+                          'Restart as user' :
+                          'Restart as administrator'
           }}
           action_name={'restart_elevation'}
           action_callback={(action_name: any, value:any) => {
@@ -162,10 +160,9 @@ export class GeneralSettings extends React.Component <any, any> {
             }));
           }}
           ref={(input) => {this.restart_reference=input;}}
-        />)
-        }
+        />
         <ChoiceGroupSettingsControl
-          setting={{display_name: 'Choose Settings color',
+          setting={{display_name: 'Chose Settings color',
                     value: this.state.settings.general.theme,
                     options: [
                       { key: 'system', text: 'System default app mode'},
